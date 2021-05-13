@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  server:
+    build: ./server/
+    container_name: server
+    ports:
+      - 5000:5000
+    volumes: 
+      - ./server:/server
+      - /server/node_modules
+    depends_on: 
+      - mongo
+
+  frontend:
+    build: ./client/
+    container_name: frontend
+    volumes:
+      - ./client:/client
+      - /client/node_modules
+    depends_on: 
+      - server
+    stdin_open: true
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+
+  nginx:
+    image: 'nginx:latest'
+    container_name: "nginx"
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./conf/nginx.conf:/etc/nginx/nginx.conf
+    restart: unless-stopped
+    depends_on: 
+      - frontend
+
+networks:
+  default:
+    name: sad_network
