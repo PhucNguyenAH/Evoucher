@@ -23,7 +23,7 @@ const continents = [
 	},
 	{
 		_id: 2,
-		name: 'Drink',
+		name: 'Travel',
 	},
 ];
 

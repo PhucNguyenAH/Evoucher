@@ -3,6 +3,7 @@ const router = express.Router();
 const { Product } = require('../models/Product');
 const { Selling } = require('../models/Selling');
 const multer = require('multer');
+const ObjectId = require('mongodb').ObjectID;
 
 const { auth } = require('../middleware/auth');
 
@@ -47,7 +48,7 @@ router.post('/uploadVoucher', auth, (req, res) => {
 	});
 });
 
-router.post('/selling', auth, (req, res) => {
+router.post('/selling', auth, async (req, res) => {
 	const selling = new Selling(req.body);
 
 	selling.save((err) => {
@@ -66,7 +67,7 @@ router.post('/getVoucher', (req, res) => {
 	let term = req.body.searchTerm;
 	let category = req.body.filters?.Category;
 
-	let categoryDe = { 1: 'Food', 2: 'Drink' };
+	let categoryDe = { 1: 'Food', 2: 'Travel' };
 
 	if (term) {
 		Product.find({ $text: { $search: term } }).exec((err, product) => {
@@ -99,10 +100,22 @@ router.post('/:id', (req, res) => {
 router.post('/getVoucherShopId/:id', (req, res) => {
 	const _id = req.params.id;
 
-	Product.find({ _id }).exec((err, product) => {
+	Product.find({ shopId: _id }).exec((err, product) => {
 		if (err) return res.status(400).json({ success: false });
 
-		res.status(200).json({ success: true, shopId: product.shopId });
+		res.status(200).json({ success: true, product });
+	});
+});
+
+router.post('/blockVoucher/:id', (req, res) => {
+	const _id = req.params.id;
+	console.log(req.params.id);
+	Product.findOneAndUpdate({ _id }, { $set: { countInStock: 0 } }, { new: true }, (err, doc) => {
+		if (err) {
+			console.log('Something wrong when updating data!');
+		}
+
+		res.status(200).json({ success: true });
 	});
 });
 

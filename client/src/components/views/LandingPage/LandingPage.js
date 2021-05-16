@@ -245,9 +245,9 @@ function LandingPage() {
 									Food
 								</div>
 							</NavItem>
-							<NavItem className={`nav-item ${isActive === 'Drink' ? 'active' : ''}`}>
-								<div className='nav-link' onClick={(e) => onSearch(e, 'filter', 'Drink')}>
-									Drink
+							<NavItem className={`nav-item ${isActive === 'Travel' ? 'active' : ''}`}>
+								<div className='nav-link' onClick={(e) => onSearch(e, 'filter', 'Travel')}>
+									Travel
 								</div>
 							</NavItem>
 						</ul>

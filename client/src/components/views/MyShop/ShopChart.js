@@ -2,14 +2,29 @@ import React, { useState } from 'react';
 import { Line } from 'react-chartjs-2';
 
 function ShopChart(props) {
-	const [dataShop, setDataShop] = useState([]);
+	console.log(props);
+	const [dataShop, setDataShop] = useState();
 	const options = {
 		onClick: (e, element) => {
 			if (element.length > 0) {
-				const valueOb = { [e.chart.tooltip.dataPoints[0].label]: e.chart.tooltip.dataPoints[0].formattedValue };
-				if (dataShop.map((e) => Object.keys(e)[0]).indexOf(Object.keys(valueOb)[0]) === -1) {
-					setDataShop([valueOb, ...dataShop]);
-				}
+				// const valueOb = { [e.chart.tooltip.dataPoints[0].label]: e.chart.tooltip.dataPoints[0].formattedValue };
+				// const dataShop = { [e.chart.tooltip.dataPoints[0].label]: props.dataTime.map((x) => Object.values(x).map((xx) => Object.values(xx)[0])[0])[0] };
+				const dataShop = {};
+				props.dataTime.forEach((x) => {
+					console.log("x", x);
+					if (Object.keys(x)[0] === e.chart.tooltip.dataPoints[0].label) {
+						Object.values(x).forEach((xx) => {
+							dataShop[e.chart.tooltip.dataPoints[0].label] = Object.values(xx)[0];
+						})
+					}
+				})
+				// if (dataShop.map((e) => Object.keys(e)[0]).indexOf(Object.keys(valueOb)[0]) === -1) {
+				setDataShop(dataShop);
+				// }
+				console.log("dataShop", dataShop);
+				// Object.values(dataShop).map((e) =>
+				// 	console.log(e)
+				// )
 			}
 		},
 
@@ -29,7 +44,7 @@ function ShopChart(props) {
 			{
 				label: 'number of selling products',
 				data: props.dataTime
-					.map((e) => Object.values(e))
+					.map((e) => Object.values(e).map((ee) => Object.keys(ee)[0]))
 					.reduce((acc, cur) => {
 						return [...acc, ...cur];
 					}, []),
@@ -58,26 +73,46 @@ function ShopChart(props) {
 				<thead>
 					<tr>
 						<th scope='col' style={{ fontSize: '23px' }}>
-							Date
+							Title
 						</th>
 						<th scope='col' style={{ fontSize: '23px' }}>
 							Quantity
 						</th>
+						<th scope='col' style={{ fontSize: '23px' }}>
+							Cash
+						</th>
 					</tr>
 				</thead>
 
-				{dataShop?.length > 0
+				{/* {dataShop?.length > 0
 					? dataShop.map((e) => (
-							<tbody>
-								<tr className='table-light'>
-									<td style={{ fontWeight: '500' }}>{Object.keys(e)}</td>
-									<td style={{ fontWeight: '500' }}>{Object.values(e)}</td>
-								</tr>
-							</tbody>
-					  ))
+						<tbody>
+							<tr className='table-light'>
+								<td style={{ fontWeight: '500' }}>{Object.keys(e)}</td>
+								<td style={{ fontWeight: '500' }}>{Object.values(e)}</td>
+								)
+							</tr>
+							)
+						</tbody>
+					))
+					: null} */}
+				{dataShop ?
+					Object.values(dataShop).map((e) => (
+						<>
+							{e.map((card) =>
+								<tbody>
+									<tr className='table-light'>
+										{card.map((infor) =>
+											<td style={{ fontWeight: '500' }}>{infor}</td>
+										)}
+									</tr>
+								</tbody>
+							)}
+						</>
+					))
 					: null}
 			</table>
-		</div>
+		</div >
 	);
 }
 

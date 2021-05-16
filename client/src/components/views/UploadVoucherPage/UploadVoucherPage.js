@@ -10,12 +10,13 @@ function UploadVoucherPage(props) {
 	const [tittle, setTittle] = useState('');
 	const [description, setDescription] = useState('');
 	const [price, setPrice] = useState(0);
+	const [countinstock, setCountinstock] = useState(1);
 	const [category, setCategory] = useState('Food');
 	const [Images, setImages] = useState();
 
 	const Category = [
 		{ key: 1, value: 'Food' },
-		{ key: 2, value: 'Drink' },
+		{ key: 2, value: 'Travel' },
 	];
 
 	const onTitleChange = (e) => {
@@ -26,6 +27,9 @@ function UploadVoucherPage(props) {
 	};
 	const onPriceChange = (e) => {
 		setPrice(e.target.value);
+	};
+	const onCountinstockChange = (e) => {
+		setCountinstock(e.target.value);
 	};
 	const onCategoryChange = (e) => {
 		setCategory(e.target.value);
@@ -40,6 +44,7 @@ function UploadVoucherPage(props) {
 			title: tittle,
 			description: description,
 			price: price,
+			countinstock: countinstock,
 			image: Images,
 			category: category,
 			shopId: shopId,
@@ -74,6 +79,10 @@ function UploadVoucherPage(props) {
 				<br />
 				<label>Price</label>
 				<Input onChange={onPriceChange} value={price} type='number'></Input>
+				<br />
+				<br />
+				<label>Limit</label>
+				<Input onChange={onCountinstockChange} value={countinstock} type='number'></Input>
 				<br />
 				<br />
 				<label style={{ marginRight: '25px' }}>Category</label>

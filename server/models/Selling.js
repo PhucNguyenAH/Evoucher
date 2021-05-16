@@ -3,6 +3,9 @@ const Schema = mongoose.Schema;
 
 const sellingSchema = mongoose.Schema(
 	{
+		productName: {
+			type: String,
+		},
 		productId: {
 			type: String,
 		},
@@ -10,6 +13,10 @@ const sellingSchema = mongoose.Schema(
 			type: String,
 		},
 		quantity: {
+			type: Number,
+			default: 0,
+		},
+		cash: {
 			type: Number,
 			default: 0,
 		},

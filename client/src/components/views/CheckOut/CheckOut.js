@@ -18,15 +18,19 @@ function CheckOut(props) {
 	// }, [input]);
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		const updateProduct = {}
 		products.map((item) => {
-			axios.post(`/api/product/${item._id}`).then((res) => {
+			axios.post(`/api/product/${item._id}`, item?.quantity).then((res) => {
+				console.log(item);
 				if (res.data.success) {
 					const shopId = res.data?.product[0]?.shopId;
 
 					const selling = {
+						productName: item?.title,
 						userId: userId,
 						productId: item._id,
 						quantity: item?.quantity,
+						cash: item?.price,
 						shopId: shopId,
 					};
 					console.log(selling);
@@ -155,10 +159,8 @@ function CheckOut(props) {
 
 							<li className='list-group-item d-flex justify-content-between bg-light'>
 								<div className='text-success'>
-									<h6 className='my-0'>Promo code</h6>
-									<small>EXAMPLECODE</small>
+									<h6 className='my-0'>Payment</h6>
 								</div>
-								<span className='text-success'>-$5</span>
 							</li>
 							<li className='list-group-item d-flex justify-content-between'>
 								<span>Total (USD)</span>
@@ -171,22 +173,6 @@ function CheckOut(props) {
 							</li>
 						</ul>
 
-						<form className='card p-2'>
-							<div className='input-group'>
-								<input
-									type='text'
-									className='form-control'
-									placeholder='Promo code'
-									aria-label="Recipient's username"
-									aria-describedby='basic-addon2'
-								/>
-								<div className='input-group-append'>
-									<button className='btn btn-secondary btn-md waves-effect m-0' type='button'>
-										Redeem
-									</button>
-								</div>
-							</div>
-						</form>
 					</div>
 				</div>
 			</div>
