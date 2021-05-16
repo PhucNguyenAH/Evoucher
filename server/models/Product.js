@@ -22,9 +22,10 @@ const productSchema = mongoose.Schema(
 			type: Array,
 			default: [],
 		},
-		countInStock: {
+		quantity: {
 			type: Number,
 			default: 0,
+			min: 0,
 		},
 		views: {
 			type: Number,

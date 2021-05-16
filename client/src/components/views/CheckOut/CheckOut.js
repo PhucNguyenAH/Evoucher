@@ -20,7 +20,7 @@ function CheckOut(props) {
 		e.preventDefault();
 		const updateProduct = {}
 		products.map((item) => {
-			axios.post(`/api/product/${item._id}`, item?.quantity).then((res) => {
+			axios.post(`/api/product/${item._id}`).then((res) => {
 				console.log(item);
 				if (res.data.success) {
 					const shopId = res.data?.product[0]?.shopId;
@@ -34,6 +34,13 @@ function CheckOut(props) {
 						shopId: shopId,
 					};
 					console.log(selling);
+					axios.post(`/api/product/updateCountInStock/${item._id}`, selling).then((res) => {
+						if (res.data.success) {
+							alert('Successfully');
+						} else {
+							alert('Failed to voucher');
+						}
+					});
 					axios.post('/api/product/selling', selling).then((res) => {
 						if (res.data.success) {
 							setCodeVoucher({ ...codeVoucher, sellingStatus: true, amount: products.length });

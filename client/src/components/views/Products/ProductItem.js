@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 function ProductItem({ match }) {
 	const [productItem, setProductItem] = useState();
 	const [quantity, setQuantity] = useState(0);
-	// const [countInStock, setCountInStock] = useState();
+	const [countInStock, setCountInStock] = useState();
 	const [price, setPrice] = useState();
 	const [realPrice, setRealPrice] = useState();
 	const products = useSelector((state) => state.user.Carts);
@@ -20,9 +20,10 @@ function ProductItem({ match }) {
 			const result = await axios.post(`/api/product/${match.params.id}`);
 
 			console.log(result.data);
-			const { title, description, price, category, _id, image, countInStock } = result.data.product[0];
+			const { title, description, price, category, _id, image, quantity } = result.data.product[0];
 
-			setProductItem({ title, description, price, category, _id, image, countInStock });
+			setProductItem({ title, description, price, category, _id, image });
+			setCountInStock(quantity);
 			setPrice(price);
 			setRealPrice(price);
 		};
@@ -31,6 +32,8 @@ function ProductItem({ match }) {
 	}, []);
 
 	const handleChange = (e) => {
+		if (e.currentTarget.value > countInStock) return;
+		else if (e.currentTarget.value < 0) return;
 		setQuantity(e.currentTarget.value);
 		if (e.currentTarget.value > 0) setRealPrice(e.currentTarget.value * price);
 		setProductItem({ ...productItem, price: e.currentTarget.value * price, quantity: e.currentTarget.value });
@@ -74,14 +77,14 @@ function ProductItem({ match }) {
 							<p className='lead font-weight-bold'>Description</p>
 
 							<p>{productItem?.description}</p>
-							{productItem?.countInStock === 0 ? (
+							{countInStock === 0 ? (
 								<p style={{ color: 'red', fontWeight: '700', fontSize: '2rem' }}>Out of Stock</p>
 							) : (
 								<>
 									<form onSubmit={handleSubmit}>
 										<div>
 											<select value={quantity} onChange={handleChange}>
-												{[...Array(productItem?.countInStock).keys()].map((x) => (
+												{[...Array(countInStock).keys()].map((x) => (
 													<option key={x + 1} value={x + 1}>{x + 1}</option>
 												))}
 											</select>

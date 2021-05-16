@@ -107,10 +107,23 @@ router.post('/getVoucherShopId/:id', (req, res) => {
 	});
 });
 
+router.post('/updateCountInStock/:id', (req, res) => {
+	const _id = req.params.id;
+	const value = req?.body.quantity;
+	console.log(value);
+	Product.findOneAndUpdate({ _id }, { $inc: { quantity: -value } }, { new: true }, (err, doc) => {
+		if (err) {
+			console.log('Something wrong when updating data!');
+		}
+
+		res.status(200).json({ success: true });
+	});
+});
+
 router.post('/blockVoucher/:id', (req, res) => {
 	const _id = req.params.id;
 	console.log(req.params.id);
-	Product.findOneAndUpdate({ _id }, { $set: { countInStock: 0 } }, { new: true }, (err, doc) => {
+	Product.findOneAndUpdate({ _id }, { $set: { quantity: 0 } }, { new: true }, (err, doc) => {
 		if (err) {
 			console.log('Something wrong when updating data!');
 		}
