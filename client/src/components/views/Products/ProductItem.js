@@ -14,12 +14,10 @@ function ProductItem({ match }) {
 	const products = useSelector((state) => state.user.Carts);
 
 	const dispatch = useDispatch();
-
 	useEffect(() => {
 		const getResult = async () => {
 			const result = await axios.post(`/api/product/${match.params.id}`);
 
-			console.log(result.data);
 			const { title, description, price, category, _id, image, quantity } = result.data.product[0];
 
 			setProductItem({ title, description, price, category, _id, image });
@@ -39,9 +37,11 @@ function ProductItem({ match }) {
 		setProductItem({ ...productItem, price: e.currentTarget.value * price, quantity: e.currentTarget.value });
 	};
 	const handleSubmit = (e) => {
-
 		e.preventDefault();
-
+		if (productItem?.quantity === undefined || productItem?.quantity === 0) {
+			alert("Please pick a number");
+			return;
+		}
 		try {
 			dispatch(addToCart(productItem));
 		} catch (error) {
@@ -77,24 +77,26 @@ function ProductItem({ match }) {
 							<p className='lead font-weight-bold'>Description</p>
 
 							<p>{productItem?.description}</p>
+							<p className='lead font-weight-bold'>Count in Stock </p>
+
+							<p style={{ color: '#4285F4', fontWeight: '600' }}>{countInStock} vouchers</p>
 							{countInStock === 0 ? (
 								<p style={{ color: 'red', fontWeight: '700', fontSize: '2rem' }}>Out of Stock</p>
 							) : (
-								<>
-									<form onSubmit={handleSubmit}>
-										<div>
-											<select value={quantity} onChange={handleChange}>
-												{[...Array(countInStock).keys()].map((x) => (
-													<option key={x + 1} value={x + 1}>{x + 1}</option>
-												))}
-											</select>
-										</div>
-										<button className='btn btn-primary' type='submit' style={{ margin: '0px' }}>
-											Add to cart
+								<form onSubmit={handleSubmit}>
+									<input
+										type='number'
+										value={quantity}
+										aria-label='Search'
+										className='form-control'
+										style={{ width: '100px' }}
+										onChange={handleChange}
+									/>
+									<button className='btn btn-primary' type='submit' style={{ margin: '0px' }}>
+										Add to cart
 									<i className='fas fa-shopping-cart ml-1'></i>
-										</button>
-									</form>
-								</>
+									</button>
+								</form>
 							)}
 						</div>
 					</div>
@@ -107,5 +109,3 @@ function ProductItem({ match }) {
 }
 
 export default ProductItem;
-
-// productItem?.quantity
